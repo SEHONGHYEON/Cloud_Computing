@@ -1,0 +1,136 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <!-- 샘플 소스  -->
+</head>
+<body>
+    <div id="chartContainer" style="height: 400px; width: 100%;"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-database.js"></script>
+
+
+    <!-- canvasjs -->
+    <!-- canvasJS 라이브러리(canavasjs.min.js)가 존재하는 경로 반드시 확인 바람  -->
+    <script src="canvasjs.min.js"></script>
+
+    <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+       apiKey: "AIzaSyA88FxrfDOGI80K1gWtaGExL1L4QBrVlq4",
+       authDomain: "dht11-2020-1-6128f.firebaseapp.com",
+       databaseURL: "https://dht11-2020-1-6128f.firebaseio.com",
+       projectId: "dht11-2020-1-6128f",
+       storageBucket: "dht11-2020-1-6128f.appspot.com",
+       messagingSenderId: "82708996759",
+       appId: "1:82708996759:web:61121f99a2c55da0a87fd2",
+       measurementId: "G-C677FDYN5D"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+
+          // CnavasJS.Chart 객체 생성 및 실행
+          var chart = new CanvasJS.Chart("chartContainer", {
+              animationEnabled: true,
+              title: {
+                  text: "Cloud based IoT Weather Monitor",
+                  fontFamily: "Helvetica",
+                  fontWeight: "bold",
+                  fontColor: '#03254E',
+                  fontSize: 22,
+              },
+              legend: {
+                  fontSize: 15,
+                  // verticalAlign: "top",  // legend를 top으로 이동함, 기본은 차트 bottom에 위치함
+              },
+              axisX: {
+                  title: "Time",
+                  suffix: "s",
+                  titleFontSize: 14,
+                  titleFontColor: '#03254E',
+                  valueFormatString: 'HH:mm:ss',
+                  labelFontColor: '#03254E',
+              },
+              axisY: {
+                  title: "Temperature",
+                  suffix: "°C",
+                  valueFormatString: "0.0#",
+                  minimum: 0,
+                  maximum: 50,
+                  titleFontColor: '#03254E',
+                  titleFontSize: 14,
+                  labelFontColor: '#03254E',
+              },
+              axisY2: {
+                  title: "Humidity",
+                  suffix: "%",
+                  valueFormatString: "0.0#",
+                  minimum: 0,
+                  maximum: 90,
+                  titleFontColor: '#03254E',
+                  titleFontSize: 14,
+                  labelFontColor: '#03254E',
+              },
+
+              toolTip: {
+                  shared: true,
+
+                  // Custom toolTip 사용
+                  contentFormatter: function(e) {
+                      var content = CanvasJS.formatDate(e.entries[0].dataPoint.x, "HH:mm:ss") + "<br>";
+                      content += "Humidity: " + e.entries[0].dataPoint.y + " &deg;C<br>";
+                      content += "Temperature: " + e.entries[1].dataPoint.y + " %";
+                      return content;
+                  }
+              },
+              animationEnabled: true,
+              data: [{
+                  type: "line", //change it to line, spline, area, column, pie,
+                  name: "Humidity",
+                  axisYType: "secondary",
+                  showInLegend: true,
+                  legendText: "Humidity",
+                  markType: "circle",
+                  markerSize: 1,
+                  markerColor: "blue",
+                  lineColor: "blue",
+                  dataPoints: []   // Humidity 데이터 출력 값을 저장하는 배열
+              }, {
+                type: "line", //change it to line, spline, area, column, pie,
+                name: "Temperature",
+                axisY2Type: "secondary",
+                showInLegend: true,
+                legendText: "Temperature",
+                markType: "circle",
+                markerSize: 1,
+                markerColor: "red",
+                lineColor: "red",
+                  dataPoints: []  // Temperature 데이터 출력 값을 저장하는 배열
+              }]
+          });
+
+          // get the text value from the database
+          var dbRef = firebase.database().ref('logDHT/');
+
+          dbRef.on('child_added', function(snapshot) {
+              var row = snapshot.val();
+
+              // firebase DB로 부터 받은 날짜 문자열은 CanvasJS에서 사용하려면 반드시 Date 객체형으로 변환해야 함
+              row.time = new Date(row.time);
+              chart.options.data[0].dataPoints.push({   // data[0]는 Huminity 속성 배열
+                  x: row.time,
+                  y: row.humidity
+              });
+              chart.options.data[1].dataPoints.push({   // data[1]는 Temperature 속성 배열
+                x: row.time,
+                y: row.temperature
+              });
+              chart.render();  // 데이터 포인터 값을 챠트에 넣은 후 차트 출력
+          });
+      </script>
+
+  </body>
+  </html>
