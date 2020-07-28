@@ -1,0 +1,98 @@
+<html>
+<head>
+  <style>
+  .on-button {
+    background-color: red;
+    border: none;
+    color: white;
+    padding: 15px 30px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 30px;
+    margin: 4px 2px;
+    cursor: pointer;
+  }
+  </style>
+  <style>
+  .off-button {
+    background-color: blue;
+    border: none;
+    color: white;
+    padding: 15px 30px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 30px;
+    margin: 4px 2px;
+    cursor: pointer;
+  }
+</style>
+</head>
+  <body>
+      <p>Cloud based IoT Remote LED Control Wep App</p>
+      <h1 id="OUT_TEXT"></h1>
+      <button class = "on-button" id= "onBtn" onclick="onFunction()">LED ON</button>
+      <button class = "off-button" id="offBtn" onclick="offFunction()">LED OFF</button>
+
+      <!-- The core Firebase JS SDK is always required and must be listed first -->
+      <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-app.js"></script>
+
+  <!-- TODO: Add SDKs for Firebase products that you want to use
+       https://firebase.google.com/docs/web/setup#available-libraries -->
+  <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-analytics.js"></script>
+
+        <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-database.js"></script>
+
+     <script>
+       // Your web app's Firebase configuration
+       var firebaseConfig = {
+          apiKey: "AIzaSyDUpsI3SfRlHc0WsjQTe_e6Knon0AFQYDU",
+          authDomain: "fir-led-control-c6e01.firebaseapp.com",
+          databaseURL: "https://fir-led-control-c6e01.firebaseio.com",
+          projectId: "fir-led-control-c6e01",
+          storageBucket: "fir-led-control-c6e01.appspot.com",
+          messagingSenderId: "342381845545",
+          appId: "1:342381845545:web:7ec24a89b98f95b6cbd038",
+          measurementId: "G-LWVEZE76ME"
+           };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      firebase.analytics();
+      </script>
+
+      <script>
+        // getting the text value from the database
+        var led_on = document.getElementById('onBtn');
+        var led_off = document.getElementById('offBtn');
+
+        var dbRef = firebase.database().ref().child('LED_STATUS');
+
+        // ON 버턴 클릭하여 DB 값 true 설정
+        function onFunction() {
+            dbRef.set('ON')
+        }
+
+          // OFF 버튼 클릭하여 DB 값 false 설정
+        function offFunction() {
+            dbRef.set('OFF')
+        }
+
+
+        dbRef.on('value', snap => OUT_TEXT.innerText = snap.val());
+        // 현재 상태의 database 값 읽어오기
+        dbRef.on("value", function(snapshot) {
+
+          if (snapshot.val() == 'ON') {
+            console.log(snapshot.val());
+            OUT_TEXT.innerText = 'LED is ON';
+          } else if (snapshot.val() == 'OFF'){
+            OUT_TEXT.innerText = 'LED is OFF';
+          }
+
+        }, function (error) {
+          console.log("Error: " + error.code);
+        });
+      </script>
+    </body>
+</html>
