@@ -1,0 +1,58 @@
+<html>
+    <body>
+          <p>Getting started with Firebase</p>
+          <h1 id="bigOne"></h1>
+           <script src="https://www.gstatic.com/firebasejs/7.15.4/firebase-app.js"></script>
+           <script src="https://www.gstatic.com/firebasejs/7.15.4/firebase-auth.js"></script>
+           <script src="https://www.gstatic.com/firebasejs/7.15.4/firebase-database.js"></script>
+
+             <script>  // Your web app's Firebase configuration
+                 var firebaseConfig = {
+                   apiKey: "AIzaSyBJQgGO0FH-NmSfHVExASXayy7qfvgLWjQ",
+                   authDomain: "fir-hello-24928.firebaseapp.com",
+                   databaseURL: "https://fir-hello-24928.firebaseio.com",
+                   projectId: "fir-hello-24928",
+                   storageBucket: "fir-hello-24928.appspot.com",
+                   messagingSenderId: "611267203109",
+                   appId: "1:611267203109:web:8ac9797498eeb2370eefcc",
+                   measurementId: "G-ZX5YFDQ04V"
+               };
+               // Initialize Firebase
+               firebase.initializeApp(firebaseConfig);
+               firebase.analytics();
+
+           </script>
+
+           <script>
+                // getting the text value from the database
+                var bigOne = document.getElementById('bigOne');
+                var dbRef = firebase.database().ref().child('text');
+                // write data
+                dbRef.set(
+                   'Hello World'
+                )
+
+
+
+            var dbRef2 = firebase.database().ref()
+            dbRef2.update({
+              'text' : 'Good Monring Firebase'
+            })
+
+
+          dbRef.on('value', snap => bigOne.innerText = snap.val());
+
+                // database 값이 변하면 이벤트 방생
+                dbRef.on("value", function(snapshot) {
+                  console.log(snapshot.val());
+                  bigOne.innerText = snapshot.val();
+                }, function (error) {
+                  console.log("Error: " + error.code);
+                });
+
+
+
+              //  dbRef.on('value', snap => bigOne.innerText = snap.val());
+      </script>
+    </body>
+</html>

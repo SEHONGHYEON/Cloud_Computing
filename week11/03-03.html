@@ -1,0 +1,233 @@
+<html>
+
+  <style media="screen">
+    h2{
+      text-align: center;
+      color: black;
+    }
+  </style>
+<body>
+     <h2> Firebase IoT Weather Monitor using Object Data
+         <p><p><p>
+       <div class="card bg-white">
+        <h4 id="time"></h3>
+      </div>
+      <p><p><p>
+
+
+   <div class="card-deck" style="width: 1600px" >
+
+       <p><p>
+
+
+         <div class="card bg-success">
+           <div class="card-body text-center">
+      <h2 id="temp"></h2> <img src="C:\Users\user\Downloads\temp.png" style="width: 100px; height: 80px";>
+    </div>
+  </div>
+
+
+
+    <div class="card bg-warning">
+      <div class="card-body text-center">
+    <h2 id="humi"></h2> <img src="C:\Users\user\Downloads\pngwing.com.png" style="width: 100px; height: 80px";>
+   </div>
+
+ </div>
+</div>
+
+<p><p><p>
+ <div class="card bg-light">
+   <div id="chartContainer" style="height:400px; width: 100%;"></div>
+</div>
+
+
+
+
+
+
+
+     <div>
+
+
+      <script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-app.js"></script>
+      <script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-auth.js"></script>
+      <script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-database.js"></script>
+
+
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+
+      <script>
+        // 파이어베이스 설정
+        var firebaseConfig = {
+        apiKey: "AIzaSyA88FxrfDOGI80K1gWtaGExL1L4QBrVlq4",
+        authDomain: "dht11-2020-1-6128f.firebaseapp.com",
+        databaseURL: "https://dht11-2020-1-6128f.firebaseio.com",
+        projectId: "dht11-2020-1-6128f",
+        storageBucket: "dht11-2020-1-6128f.appspot.com",
+        messagingSenderId: "82708996759",
+        appId: "1:82708996759:web:61121f99a2c55da0a87fd2",
+        measurementId: "G-C677FDYN5D"
+
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+      </script>
+
+
+
+      <script>
+
+
+        var objRef = firebase.database().ref().child('logDHT/'); //자식객체 값 변수저장
+        var objRef = firebase.database().ref().child('logDHT/'); //자식객체 값 변수저장
+        objRef.on("child_added", function(snapshot){
+        var newHumi = snapshot.val().humidity; //습도 값을 snapshot을 통해 변수에 저장
+        var newTemp = snapshot.val().temperature; //온도 값을 snapshot을 통해 변수에 저장
+
+        humi.innerText = "Humidity : " + newHumi + "%"; // 습도값텍스트지정
+        temp.innerText = "Temperature : " + newTemp + "℃"; //온도값 텍스트지정
+
+        })
+
+
+
+
+        </script>
+
+
+            <script src="canvasjs.min.js"></script>
+
+            <script>
+                // Your web app's Firebase configuration
+                var firebaseConfig = {
+               apiKey: "AIzaSyA88FxrfDOGI80K1gWtaGExL1L4QBrVlq4",
+               authDomain: "dht11-2020-1-6128f.firebaseapp.com",
+               databaseURL: "https://dht11-2020-1-6128f.firebaseio.com",
+               projectId: "dht11-2020-1-6128f",
+               storageBucket: "dht11-2020-1-6128f.appspot.com",
+               messagingSenderId: "82708996759",
+               appId: "1:82708996759:web:61121f99a2c55da0a87fd2",
+               measurementId: "G-C677FDYN5D"
+                };
+
+
+
+                  // CnavasJS.Chart 객체 생성 및 실행
+                  var chart = new CanvasJS.Chart("chartContainer", {
+                      animationEnabled: true,
+                      title: {
+                          text: "Cloud based IoT Weather Monitor",
+                          fontFamily: "Helvetica",
+                          fontWeight: "bold",
+                          fontColor: '#03254E',
+                          fontSize: 22,
+                      },
+                      legend: {
+                          fontSize: 15,
+                      },
+                      axisX: {
+                          title: "Time",
+                          suffix: "s",
+                          titleFontSize: 14,
+                          titleFontColor: '#03254E',
+                          valueFormatString: 'HH:mm:ss',
+                          labelFontColor: '#03254E',
+                      },
+                      axisY: {
+                          title: "Temperature",
+                          suffix: "°C",
+                          valueFormatString: "0.0#",
+                          minimum: 0,
+                          maximum: 50,
+                          titleFontColor: '#03254E',
+                          titleFontSize: 14,
+                          labelFontColor: '#03254E',
+                      },
+                      axisY2: {
+                          title: "Humidity",
+                          suffix: "%",
+                          valueFormatString: "0.0#",
+                          minimum: 0,
+                          maximum: 90,
+                          titleFontColor: '#03254E',
+                          titleFontSize: 14,
+                          labelFontColor: '#03254E',
+                      },
+
+                      toolTip: {
+                          shared: true,
+
+                          // Custom toolTip 사용
+                          contentFormatter: function(e) {
+                              var content = CanvasJS.formatDate(e.entries[0].dataPoint.x, "HH:mm:ss") + "<br>"; //날짜 형식, x축
+                              content += "Humidity: " + e.entries[0].dataPoint.y + " &deg;C<br>"; //습도값 y축
+                              content += "Temperature: " + e.entries[1].dataPoint.y + " %"; //온도값 y축
+                              return content;
+                          }
+                      },
+                      animationEnabled: true,
+                      data: [{
+                          type: "line", //change it to line, spline, area, column, pie,
+                          name: "Humidity",
+                          axisYType: "secondary",
+                          showInLegend: true,
+                          legendText: "Humidity",
+                          markType: "circle",
+                          markerSize: 1,
+                          markerColor: "blue",
+                          lineColor: "blue",
+                          dataPoints: []   // Humidity 데이터 출력 값을 저장하는 배열
+                      }, {
+                        type: "line", //change it to line, spline, area, column, pie,
+                        name: "Temperature",
+                        axisY2Type: "secondary",
+                        showInLegend: true,
+                        legendText: "Temperature",
+                        markType: "circle",
+                        markerSize: 1,
+                        markerColor: "red",
+                        lineColor: "red",
+                          dataPoints: []  // Temperature 데이터 출력 값을 저장하는 배열
+                      }]
+                  });
+
+                  // get the text value from the database
+                  var dbRef = firebase.database().ref('logDHT/');
+
+                  dbRef.on('child_added', function(snapshot) {
+                      var row = snapshot.val();
+
+                      // Date객체로 변환
+                      row.time = new Date(row.time);
+                      chart.options.data[0].dataPoints.push({   // data[0]는 Huminity 속성 배열
+                          x: row.time,
+                          y: row.humidity
+                      });
+                      chart.options.data[1].dataPoints.push({   // data[1]는 Temperature 속성 배열
+                        x: row.time,
+                        y: row.temperature
+                      });
+                      chart.render();  // 데이터 포인터 값을 챠트에 넣음
+                  });
+
+
+
+                          setInterval("dpTime()",1000);
+                          function dpTime(){ var now = new Date();
+                               document.getElementById("time").innerHTML = now; }
+
+              </script>
+
+
+
+
+
+
+      </script>
+</body>
+</html>
